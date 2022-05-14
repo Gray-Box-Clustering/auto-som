@@ -1,0 +1,47 @@
+version: '3.1'
+
+services:
+
+  api:
+    build:
+      context: .
+      dockerfile: prod.Dockerfile
+    container_name: fastapi-container
+    depends_on:
+      - mongo
+    restart: always
+    command: "uvicorn api.app:app --host 0.0.0.0 --port 80 --reload"
+    ports:
+      - "8000:80"
+    volumes:
+      - ./api:/code/api
+
+  mongo-express:
+    image: mongo-express:0.54.0
+    container_name: mongo-express-container
+    depends_on:
+      - mongo
+    restart: always
+    ports:
+      - "8081:8081"
+    env_file:
+      - env/mongo-express.env
+
+  mongo:
+    image: mongo:5.0.8
+    container_name: mongo-container
+    restart: always
+    ports:
+      - "27017:27017"
+    env_file:
+      env/mongo.env
+#    volumes:
+#      - './data:/data/db'
+    volumes:
+      - type: volume
+        source: data
+        target: /data/db
+
+volumes:
+  data:
+#  api:
