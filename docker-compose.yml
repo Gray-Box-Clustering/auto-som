@@ -2,6 +2,8 @@ version: '3.1'
 
 services:
 
+  # TODO: add streamlit frontend
+
   api:
     build:
       context: .
